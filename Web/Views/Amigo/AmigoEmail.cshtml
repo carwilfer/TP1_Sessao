@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Domain.Amigo>
+
+@{
+    ViewData["Title"] = "AmigoEmail";
+}
+
+@section Scripts{
+    <script>
+        var ids = [];
+        $(document).ready(function () {
+            $("input[type='checkbox']").each(function (i, e) {
+                if ($(e).is(":checked")) {
+                    ids.push($(this).attr("id"));
+                }
+            });
+            $("input[type='checkbox']").bind("click", function () {
+                if ($(this).is(":checked")) {
+                    ids.push($(this).attr("id"));
+                } else {
+                    var id = $(this).attr("id");
+
+                    //para remover do array o item que deixou de ser selecionado
+                    ids = ids.filter(function (elem) {
+                        return elem != id;
+                    });
+                }
+            });
+            $("#lnkNavAmigos").click(function () {
+                location.href = "/Amigo/AmigoEmailSelecionado?ids=" + ids.join(",");
+            });
+        });
+    </script>
+}
+
+<h1>AmigoEmail</h1>
+<a href="#" id="lnkNavAmigos">Ver Amigos Selecionados</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sobrenome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @{
+                        var marcarCheckbox = false;
+                        if (ViewBag.IdsSelecionados != null)
+                        {
+                            foreach (var id in ViewBag.IdsSelecionados)
+                            {
+                                if (item.Id.ToString() == id)
+                                {
+                                    marcarCheckbox = true;
+                                }
+                            }
+                        }
+                    }
+                    @if (marcarCheckbox)
+                    {
+                        <input type="checkbox" id="@item.Id" checked />
+                    }
+                    else
+                    {
+                        <input type="checkbox" id="@item.Id" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sobrenome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Voltar para a lista geral</a>
+</div>
